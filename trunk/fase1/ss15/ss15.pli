@@ -1,0 +1,40 @@
+#
+# ss15
+#
+#
+
+
+/*parametros*/
+param n, integer;
+param m, integer;
+param t {(i,j) in (1..n cross 1..m)}, integer;
+
+
+/*variaveis de decisoes*/
+var s {(i,j) in (1..n cross 1..m)}, integer;
+var y {(i,j) in (1..n cross 1..m), (k,r) in (1..n cross 1..m)}, binary;
+var fim, integer;
+
+/*funcao objetivo*/
+minimize z: fim;
+
+/*restricao de fim*/
+s.t. fr{(i,j) in (1..n cross 1..m)}: fim >= s[i,j] + t[i,j];
+
+/*Restricao de y*/
+s.t. rt1{(i,k) in (1..n cross 1..m), (j,k) in (1..n cross 1..m): i!=j}: y[i,k,j,k] + y[j,k,i,k] = 1;
+
+/*Restricoes temporais*/
+s.t. rt2{(i,j) in (1..n cross 1..m), (i,h) in (1..n cross 1..m): j<h}: s[i,j] + t[i,j] - s[i,h] <= 0;
+s.t. rt3{(i,j) in (1..n cross 1..m), (h,j) in (1..n cross 1..m): i!=h}: s[i,j] + t[i,j] <= s[h,j] + (1-y[i,j,h,j])*(sum{(v,c) in (1..n cross 1..m)} t[v,c]);   
+s.t. rt4{(i,j) in (1..n cross 1..m), (h,j) in (1..n cross 1..m): i!=h}: s[h,j] + t[h,j] <= s[i,j] + y[i,j,h,j]*(sum{(v,c) in (1..n cross 1..m)} t[v,c]);       
+
+/*Restricao nao negatividade*/
+s.t. nn{(i,j) in (1..n cross 1..m)}: s[i, j] >= 0;
+
+
+solve;
+
+printf: "%d", fim > "ss15.out";
+
+end;
