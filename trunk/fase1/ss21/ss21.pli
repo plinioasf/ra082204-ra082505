@@ -1,0 +1,37 @@
+#
+# ss21
+#
+#
+
+/*parametros*/
+
+param n, integer;
+param d {i in 1..n}, integer;
+param c {i in 1..n}, integer;
+param b {i in 1..n}, integer;
+param p {i in 1..n}, integer;
+param h {i in 1..n}, integer;
+
+/*variaveis de decicao*/
+var x {i in 1..n}, integer;
+var a {i in 1..n}, integer;
+var k {i in 1..n}, binary;
+
+
+/*funcao objetivo*/
+minimize z: sum{i in 1..n} (x[i]*p[i] + b[i]*k[i] + a[i]*h[i]);
+
+/*Restricoes tecnologicas*/
+s.t. tec1{i in 1..n}: x[i] <= c[i]*k[i];
+s.t. tec2{i in 2..n}: x[i] + a[i-1] - a[i] = d[i];
+s.t. tec3: x[1] - a[1] = d[1];
+
+/*Restricao nao negatividade*/
+s.t. nn1{i in 1..n}: x[i] >= 0;
+s.t. nn2{i in 1..n}: a[i] >= 0;
+
+solve;
+printf: "%d", sum{i in 1..n} (x[i]*p[i] + b[i]*k[i] + a[i]*h[i]) > "ss21.out";
+
+
+end;
