@@ -34,7 +34,7 @@ s.t. rt2: sum{(t,i) in A} x[t,i] = 0;
 /*Restricoes de capacidade*/
 s.t. rv1{(i,j) in A}: x[i,j] <= c[i,j];
 
-/*LCK*/
+/*Restricoes de conservacao de fluxo*/
 s.t. rv2{i in V: i!=s and i!=t}: sum{(j,i) in A} x[j,i] - sum{(i,k) in A} x[i,k]= 0;
 
 /*Restricao nao negatividade*/
