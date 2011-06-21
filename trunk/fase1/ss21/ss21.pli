@@ -3,7 +3,7 @@
 #
 #
 
-/*parametros*/
+/*------------------------Parametros----------------------------------------*/
 
 param n, integer;
 param d {i in 1..n}, integer;
@@ -12,23 +12,42 @@ param b {i in 1..n}, integer;
 param p {i in 1..n}, integer;
 param h {i in 1..n}, integer;
 
-/*variaveis de decicao*/
+/*--------------------------------------------------------------------------*/
+
+/*--------------------VARIÁVEIS--------------------------------------------*/
+
+# x: quantidade produzida no periodo n
+# a: quantidade armazenada no periodo n
+# k: se será produzido algo no periodo n
+
 var x {i in 1..n}, integer;
 var a {i in 1..n}, integer;
 var k {i in 1..n}, binary;
 
+/*--------------------------------------------------------------------------*/
 
-/*funcao objetivo*/
+/*--------------------FUNCAO OBJETIVO--------------------------------------*/
+
 minimize z: sum{i in 1..n} (x[i]*p[i] + b[i]*k[i] + a[i]*h[i]);
 
-/*Restricoes tecnologicas*/
+/*--------------------------------------------------------------------------*/
+
+/*--------------------RESTRIÇÕES-------------------------------------------*/
+
+# Quantidade produzida nao deve exceder a capacidade
 s.t. tec1{i in 1..n}: x[i] <= c[i]*k[i];
+
+# Quantidade demandada deve ser suprida para cada periodo
 s.t. tec2{i in 2..n}: x[i] + a[i-1] - a[i] = d[i];
+
+# No periodo anterior ao primeiro, quantidade em estoque = 0
 s.t. tec3: x[1] - a[1] = d[1];
 
-/*Restricao nao negatividade*/
+# Restricao nao negatividade
 s.t. nn1{i in 1..n}: x[i] >= 0;
 s.t. nn2{i in 1..n}: a[i] >= 0;
+
+/*--------------------------------------------------------------------------*/
 
 solve;
 printf: "%d", sum{i in 1..n} (x[i]*p[i] + b[i]*k[i] + a[i]*h[i]) > "ss21.out";

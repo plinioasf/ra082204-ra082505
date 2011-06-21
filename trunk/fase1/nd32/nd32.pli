@@ -3,46 +3,61 @@
 #
 #
 
-/*sets*/
+/*------------------------SETS----------------------------------------------*/
+
 set V;
 set A within (V cross V);
 
+/*--------------------------------------------------------------------------*/
 
-/*parametros*/
+/*------------------------Parametros----------------------------------------*/
+
 param R, integer;
 param s, integer;
 param t, integer;
 param c {(i,j) in A}, integer;
 param p {(i,j) in A}, integer;
+/*--------------------------------------------------------------------------*/
 
 
-/*variaveis de decisoes*/
-var x {(i,j) in A}, integer;
+/*--------------------VARIÁVEIS--------------------------------------------*/
 
-/*funcao objetivo*/
-minimize z: sum{(i,j) in A} x[i,j]*p[i,j];
+# x: quantidade de unidades de fluxo que passa nas arestas
+# y: se passa algum fluxo na aresta (i,j)
+var x {(i,j) in A}, integer; 
+var y {(i,j) in A}, binary;
 
+/*--------------------------------------------------------------------------*/
 
-/*Restricoes de s*/
+/*--------------------FUNCAO OBJETIVO--------------------------------------*/
+
+minimize z: sum{(i,j) in A} y[i,j]*p[i,j];
+
+/*--------------------------------------------------------------------------*/
+
+/*--------------------RESTRIÇÕES-------------------------------------------*/
+
+# Restricoes de s
 s.t. rs1: sum{(s,i) in A} x[s,i] = R;
 s.t. rs2: sum{(i,s) in A} x[i,s] = 0; 
 
-/*Restricoes de t*/
+# Restricoes de t
 s.t. rt1: sum{(i,t) in A} x[i,t] = R;
 s.t. rt2: sum{(t,i) in A} x[t,i] = 0;
 
-/*Restricoes de capacidade*/
-s.t. rv1{(i,j) in A}: x[i,j] <= c[i,j];
+# Restricoes de capacidade
+s.t. rv1{(i,j) in A}: x[i,j] <= y[i,j]*c[i,j];
 
-/*Restricoes de conservacao de fluxo*/
+# Restricoes de conservacao de fluxo
 s.t. rv2{i in V: i!=s and i!=t}: sum{(j,i) in A} x[j,i] - sum{(i,k) in A} x[i,k]= 0;
 
-/*Restricao nao negatividade*/
+# Restricao nao negatividade
 s.t. nn{(i,j) in A}: x[i,j] >= 0;
 
+/*--------------------------------------------------------------------------*/
 
 solve;
-printf: "%d", sum{(i,j) in A} x[i,j]*p[i,j] > "nd32.out";
+printf: "%d", sum{(i,j) in A} y[i,j]*p[i,j] > "nd32.out";
 
 
 end;
