@@ -3,28 +3,42 @@
 #
 #
 
-/*sets*/
+/*------------------------SETS----------------------------------------------*/
+
 set V;
 set E within (V cross V);
 
-/*variaveis de decisoes yj = cores usadas; xij=cor j do vertice i*/
+/*-------------------------------------------------------------------------*/
+
+
+/*--------------------VARIÁVEIS--------------------------------------------*/
+
+#  yj = cores usadas; xij=cor j do vertice i*/
 var y {j in V}, binary;
 var x {i in V, j in V}, binary; 
 
+/*-------------------------------------------------------------------------*/
 
-/*funcao objetivo*/
+/*--------------------FUNCAO OBJETIVO--------------------------------------*/
+
 minimize z: sum{i in V} y[i];
 
+/*-------------------------------------------------------------------------*/
 
-/*Restricão 1: um vértice i so pode receber uma cor j*/
+
+/*--------------------RESTRIÇÕES-------------------------------------------*/
+
+# Restricão 1: um vértice i so pode receber uma cor j
 s.t. r1{i in V}: sum{j in V} x[i,j] = 1;
 
-/*Restrição 2 e 3: se algum vértice i receber a cor j, então y[j] = 1 e se nenhum receber, y[j] = 0*/
+# Restrição 2 e 3: se algum vértice i receber a cor j, então y[j] = 1 e se nenhum receber, y[j] = 0
 s.t. r2{i in V, j in V}: x[i,j] <= y[j];
 s.t. r3{j in V}: sum{i in V} x[i,j] >= y[j];
 
-/*Restrição 4: vértices adjacentes nao podem ter a mesma cor*/
+# Restrição 4: vértices adjacentes nao podem ter a mesma cor
 s.t. r4{(i,k) in E, j in V}: x[i,j] + x[k,j] <= 1;
+
+/*-------------------------------------------------------------------------*/
 
 solve;
 

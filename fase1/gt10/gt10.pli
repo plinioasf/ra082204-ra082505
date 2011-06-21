@@ -3,22 +3,36 @@
 #
 #
 
-/*sets*/
+/*------------------------SETS----------------------------------------------*/
+
 set V;
 set E within (V cross V);
 
-/*variaveis de decisoes*/
+/*-------------------------------------------------------------------------*/
+
+
+/*--------------------VARIÁVEIS--------------------------------------------*/
+
+# Variavel que indica se a aresta está ou não no emparelhamento maximal
 var b {(i,j) in E}, binary;
 
+/*-------------------------------------------------------------------------*/
 
-/*funcao objetivo*/
+/*--------------------FUNCAO OBJETIVO--------------------------------------*/
+
 minimize z: sum{(i,j) in E} b[i,j];
 
+/*-------------------------------------------------------------------------*/
 
-/*Restricoes maximais*/
+/*--------------------RESTRIÇÕES-------------------------------------------*/
+
+# Restrição 1: cada vértice pode se extremidade de no máximo em uma aresta do emparelhamento
 s.t. rv1{i in V}: sum{(i,j) in E} b[i,j] + sum{(j,i) in E} b[j,i] <= 1;
+
+#Restrição 2: para cada aresta (i,j) ou i ou j (ou ambos) devem ser pontas de uma aresta do emparelhamento
 s.t. rv2{(i,j) in E}: sum{(k,i) in E} b[k,i] + sum{(i,k) in E} b[i,k] + sum{(k,j) in E} b[k,j] + sum{(j,k) in E} b[j,k] - b[i,j] >= 1;
 
+/*-------------------------------------------------------------------------*/
 
 solve;
 
