@@ -8,7 +8,6 @@
 set V;
 set E within (V cross V);
 
-/*-------------------------------------------------------------------------*/
 
 
 /*--------------------VARIÁVEIS--------------------------------------------*/
@@ -16,13 +15,12 @@ set E within (V cross V);
 # Variavel que indica se a aresta está ou não no emparelhamento maximal
 var b {(i,j) in E}, binary;
 
-/*-------------------------------------------------------------------------*/
 
 /*--------------------FUNCAO OBJETIVO--------------------------------------*/
 
 minimize z: sum{(i,j) in E} b[i,j];
 
-/*-------------------------------------------------------------------------*/
+
 
 /*--------------------RESTRIÇÕES-------------------------------------------*/
 
@@ -32,7 +30,6 @@ s.t. rv1{i in V}: sum{(i,j) in E} b[i,j] + sum{(j,i) in E} b[j,i] <= 1;
 #Restrição 2: para cada aresta (i,j) ou i ou j (ou ambos) devem ser pontas de uma aresta do emparelhamento
 s.t. rv2{(i,j) in E}: sum{(k,i) in E} b[k,i] + sum{(i,k) in E} b[i,k] + sum{(k,j) in E} b[k,j] + sum{(j,k) in E} b[j,k] - b[i,j] >= 1;
 
-/*-------------------------------------------------------------------------*/
 
 solve;
 
